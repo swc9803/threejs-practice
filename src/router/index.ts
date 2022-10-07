@@ -6,6 +6,29 @@ const routes: Array<RouteRecordRaw> = [
     name: "home",
     component: () => import(/* webpackChunkName: "home" */ "../pages/Home.vue"),
   },
+  {
+    path: "/raycaster",
+    name: "raycaster",
+    component: () =>
+      import(/* webpackChunkName: "raycaster" */ "../pages/Raycaster.vue"),
+  },
+  {
+    path: "/test",
+    name: "test",
+    component: () => import(/* webpackChunkName: "test" */ "../pages/Test.vue"),
+  },
+  {
+    path: "/paint",
+    name: "paint",
+    component: () =>
+      import(/* webpackChunkName: "paint" */ "../pages/Paint.vue"),
+  },
+  {
+    path: "/block",
+    name: "block",
+    component: () =>
+      import(/* webpackChunkName: "block" */ "../pages/Block.vue"),
+  },
 ];
 
 const router = createRouter({
