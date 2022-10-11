@@ -1,17 +1,20 @@
 <template>
-  <div class="container" />
+  <div>byr</div>
+  <div ref="container" class="container" />
+  <div>hi</div>
 </template>
 
 <script setup>
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
+const container = ref();
+
 onMounted(() => {
-  let container;
   let camera, scene, raycaster, renderer;
 
-  let INTERSECTED;
+  let intersected;
 
   const pointer = new THREE.Vector2();
 
@@ -19,12 +22,10 @@ onMounted(() => {
   animate();
 
   function init() {
-    container = document.createElement("div");
-    document.body.appendChild(container);
-
     camera = new THREE.PerspectiveCamera(
       70,
-      window.innerWidth / window.innerHeight,
+      container.value.getBoundingClientRect().width /
+        container.value.getBoundingClientRect().height,
       1,
       10000
     );
@@ -38,7 +39,7 @@ onMounted(() => {
 
     const geometry = new THREE.BoxGeometry(20, 20, 20);
 
-    for (let i = 0; i < 2000; i++) {
+    for (let i = 0; i < 1000; i++) {
       const object = new THREE.Mesh(
         geometry,
         new THREE.MeshLambertMaterial({ color: Math.random() * 0xffffff })
@@ -63,33 +64,36 @@ onMounted(() => {
 
     renderer = new THREE.WebGLRenderer();
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    container.appendChild(renderer.domElement);
-
-    // stats = new Stats();
-    // container.appendChild(stats.dom);
+    renderer.setSize(
+      container.value.getBoundingClientRect().width,
+      container.value.getBoundingClientRect().height
+    );
+    container.value.appendChild(renderer.domElement);
 
     document.addEventListener("mousemove", onPointerMove);
-
-    //
-
     window.addEventListener("resize", onWindowResize);
   }
+
+  function onWindowResize() {
+    camera.aspect =
+      container.value.getBoundingClientRect().width /
+      container.value.getBoundingClientRect().height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(
+      container.value.getBoundingClientRect().width,
+      container.value.getBoundingClientRect().height
+    );
+  }
+  function onPointerMove(e) {
+    pointer.x =
+      (e.offsetX / container.value.getBoundingClientRect().width) * 2 - 1;
+    pointer.y =
+      -(e.offsetY / container.value.getBoundingClientRect().height) * 2 + 1;
+  }
+
   // orbitControls
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.update();
-
-  function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  }
-
-  function onPointerMove(event) {
-    pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-    pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
-  }
 
   function animate() {
     requestAnimationFrame(animate);
@@ -102,25 +106,24 @@ onMounted(() => {
     camera.updateMatrixWorld();
 
     // find intersections
-
     raycaster.setFromCamera(pointer, camera);
 
     const intersects = raycaster.intersectObjects(scene.children, false);
 
     if (intersects.length > 0) {
-      if (INTERSECTED != intersects[0].object) {
-        if (INTERSECTED)
-          INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
+      if (intersected != intersects[0].object) {
+        if (intersected)
+          intersected.material.emissive.setHex(intersected.currentHex);
 
-        INTERSECTED = intersects[0].object;
-        INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
-        INTERSECTED.material.emissive.setHex(0xff0000);
+        intersected = intersects[0].object;
+        intersected.currentHex = intersected.material.emissive.getHex();
+        intersected.material.emissive.setHex(0xff0000);
       }
     } else {
-      if (INTERSECTED)
-        INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
+      if (intersected)
+        intersected.material.emissive.setHex(intersected.currentHex);
 
-      INTERSECTED = null;
+      intersected = null;
     }
 
     renderer.render(scene, camera);
@@ -131,7 +134,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .container {
   width: 100%;
-  height: 100%;
-  position: fixed;
+  height: 100vh;
+  position: relative;
 }
 </style>
