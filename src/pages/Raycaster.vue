@@ -5,6 +5,7 @@
 <script setup>
 import { onMounted } from "vue";
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 onMounted(() => {
   let renderer, scene, camera;
@@ -22,10 +23,13 @@ onMounted(() => {
   const pointSize = 0.05;
   const width = 80;
   const length = 160;
-  const rotateY = new THREE.Matrix4().makeRotationY(0.005);
 
   init();
   animate();
+
+  // orbitControls
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.update();
 
   function generatePointCloudGeometry(color, width, length) {
     const geometry = new THREE.BufferGeometry();
@@ -219,7 +223,6 @@ onMounted(() => {
   }
 
   function render() {
-    camera.applyMatrix4(rotateY);
     camera.updateMatrixWorld();
 
     raycaster.setFromCamera(pointer, camera);
