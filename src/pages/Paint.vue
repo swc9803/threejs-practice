@@ -8,7 +8,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 onMounted(() => {
-  let camera, scene, renderer, controls;
+  let camera, scene, renderer;
 
   let mesh;
   const amount = parseInt(window.location.search.slice(1)) || 10;
@@ -23,6 +23,7 @@ onMounted(() => {
   init();
   animate();
 
+  camera.position.set(amount, amount, amount);
   function init() {
     camera = new THREE.PerspectiveCamera(
       60,
@@ -30,7 +31,6 @@ onMounted(() => {
       0.1,
       100
     );
-    camera.position.set(amount, amount, amount);
     camera.lookAt(0, 0, 0);
 
     scene = new THREE.Scene();
@@ -68,9 +68,6 @@ onMounted(() => {
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
-
-    controls = new OrbitControls(camera, renderer.domElement);
-    controls.update();
 
     window.addEventListener("resize", onWindowResize);
     document.addEventListener("mousemove", onMouseMove);
@@ -111,6 +108,8 @@ onMounted(() => {
 
     render();
   }
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.update();
 
   function render() {
     renderer.render(scene, camera);

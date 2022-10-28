@@ -36,7 +36,6 @@ onMounted(() => {
     scene.background = new THREE.Color(0xf0f0f0);
 
     // roll-over helpers
-
     const rollOverGeo = new THREE.BoxGeometry(50, 50, 50);
     rollOverMaterial = new THREE.MeshBasicMaterial({
       color: 0xff0000,
@@ -47,22 +46,19 @@ onMounted(() => {
     scene.add(rollOverMesh);
 
     // cubes
-
     cubeGeo = new THREE.BoxGeometry(50, 50, 50);
     cubeMaterial = new THREE.MeshLambertMaterial({
       color: 0xfeb74c,
-      map: new THREE.TextureLoader().load(
-        "textures/square-outline-textured.png"
-      ),
+      //   map: new THREE.TextureLoader().load(
+      //     "textures/square-outline-textured.png"
+      //   ),
     });
 
     // grid
-
     const gridHelper = new THREE.GridHelper(1000, 20);
     scene.add(gridHelper);
 
     //
-
     raycaster = new THREE.Raycaster();
     pointer = new THREE.Vector2();
 
@@ -78,10 +74,8 @@ onMounted(() => {
     objects.push(plane);
 
     // lights
-
     const ambientLight = new THREE.AmbientLight(0x606060);
     scene.add(ambientLight);
-
     const directionalLight = new THREE.DirectionalLight(0xffffff);
     directionalLight.position.set(1, 0.75, 0.5).normalize();
     scene.add(directionalLight);
@@ -95,8 +89,6 @@ onMounted(() => {
     document.addEventListener("pointerdown", onPointerDown);
     document.addEventListener("keydown", onDocumentKeyDown);
     document.addEventListener("keyup", onDocumentKeyUp);
-
-    //
 
     window.addEventListener("resize", onWindowResize);
   }

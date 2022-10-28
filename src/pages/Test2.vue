@@ -128,10 +128,8 @@ export default {
       }
 
       function onPointerMove(e) {
-        pointer.x =
-          (e.offsetX / container.value.getBoundingClientRect().width) * 2 - 1;
-        pointer.y =
-          -(e.offsetY / container.value.getBoundingClientRect().height) * 2 + 1;
+        pointer.x = (e.offsetX / window.innerWidth) * 2 - 1;
+        pointer.y = -(e.offsetY / window.innerHeight) * 2 + 1;
       }
       document.addEventListener("mousemove", onPointerMove);
       window.addEventListener("resize", onWindowResize);
