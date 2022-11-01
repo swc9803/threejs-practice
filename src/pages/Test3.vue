@@ -1,6 +1,6 @@
 <template>
   <div v-show="loading">loading</div>
-  <div v-show="!loading" ref="container" class="container" />
+  <div v-show="!loading" ref="containerRef" class="container" />
   <div>hi</div>
 </template>
 
@@ -10,7 +10,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-const container = ref();
+const containerRef = ref();
 const loading = ref(false);
 
 // mount 밖으로
@@ -27,7 +27,7 @@ onMounted(() => {
   });
   const camera = new THREE.PerspectiveCamera(
     75,
-    window.innerWidth / window.innerHeight,
+    containerRef.value.offsetWidth / containerRef.value.offsetHeight,
     0.1,
     2000
   );
@@ -68,27 +68,32 @@ onMounted(() => {
         action = mixer.clipAction(model.animations[2]);
         action.play();
       });
-      //   setTimeout(() => {
-      //   }, 1000);
     });
     animate();
 
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    container.value.appendChild(renderer.domElement);
+    renderer.setSize(
+      containerRef.value.offsetWidth,
+      containerRef.value.offsetHeight
+    );
+    containerRef.value.appendChild(renderer.domElement);
 
     document.addEventListener("mousemove", onPointerMove);
     window.addEventListener("resize", onWindowResize);
   }
 
   function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.aspect =
+      containerRef.value.offsetWidth / containerRef.value.offsetHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(
+      containerRef.value.offsetWidth,
+      containerRef.value.offsetHeight
+    );
   }
   function onPointerMove(e) {
-    pointer.x = (e.offsetX / window.innerWidth) * 2 - 1;
-    pointer.y = -(e.offsetY / window.innerHeight) * 2 + 1;
+    pointer.x = (e.offsetX / containerRef.value.offsetWidth) * 2 - 1;
+    pointer.y = -(e.offsetY / containerRef.value.offsetHeight) * 2 + 1;
   }
 
   // orbitControls

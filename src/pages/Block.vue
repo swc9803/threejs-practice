@@ -1,11 +1,13 @@
 <template>
-  <div class="container" />
+  <div ref="containerRef" class="container" />
 </template>
 
 <script setup>
-import { onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+
+const containerRef = ref();
 
 onMounted(() => {
   let camera, scene, renderer;
@@ -25,7 +27,7 @@ onMounted(() => {
   function init() {
     camera = new THREE.PerspectiveCamera(
       45,
-      window.innerWidth / window.innerHeight,
+      containerRef.value.offsetWidth / containerRef.value.offsetHeight,
       1,
       10000
     );
@@ -82,8 +84,11 @@ onMounted(() => {
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+    renderer.setSize(
+      containerRef.value.offsetWidth,
+      containerRef.value.offsetHeight
+    );
+    containerRef.value.appendChild(renderer.domElement);
 
     document.addEventListener("pointermove", onPointerMove);
     document.addEventListener("pointerdown", onPointerDown);
@@ -97,18 +102,22 @@ onMounted(() => {
   controls.update();
 
   function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.aspect =
+      containerRef.value.offsetWidth / containerRef.value.offsetHeight;
     camera.updateProjectionMatrix();
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(
+      containerRef.value.offsetWidth,
+      containerRef.value.offsetHeight
+    );
 
     render();
   }
 
   function onPointerMove(event) {
     pointer.set(
-      (event.clientX / window.innerWidth) * 2 - 1,
-      -(event.clientY / window.innerHeight) * 2 + 1
+      (event.clientX / containerRef.value.offsetWidth) * 2 - 1,
+      -(event.clientY / containerRef.value.offsetHeight) * 2 + 1
     );
 
     raycaster.setFromCamera(pointer, camera);
@@ -131,8 +140,8 @@ onMounted(() => {
 
   function onPointerDown(event) {
     pointer.set(
-      (event.clientX / window.innerWidth) * 2 - 1,
-      -(event.clientY / window.innerHeight) * 2 + 1
+      (event.clientX / containerRef.value.offsetWidth) * 2 - 1,
+      -(event.clientY / containerRef.value.offsetHeight) * 2 + 1
     );
 
     raycaster.setFromCamera(pointer, camera);

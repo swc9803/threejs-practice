@@ -1,11 +1,13 @@
 <template>
-  <div id="container" class="container" />
+  <div ref="containerRef" class="container" />
 </template>
 
 <script setup>
-import { onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+
+const containerRef = ref();
 
 onMounted(() => {
   let renderer, scene, camera;
@@ -128,15 +130,13 @@ onMounted(() => {
   }
 
   function init() {
-    const container = document.getElementById("container");
-
     scene = new THREE.Scene();
 
     clock = new THREE.Clock();
 
     camera = new THREE.PerspectiveCamera(
       45,
-      window.innerWidth / window.innerHeight,
+      containerRef.value.offsetWidth / containerRef.value.offsetHeight,
       1,
       10000
     );
@@ -190,8 +190,11 @@ onMounted(() => {
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    container.appendChild(renderer.domElement);
+    renderer.setSize(
+      containerRef.value.offsetWidth,
+      containerRef.value.offsetHeight
+    );
+    containerRef.value.appendChild(renderer.domElement);
 
     //
 
@@ -205,15 +208,19 @@ onMounted(() => {
   }
 
   function onPointerMove(event) {
-    pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-    pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    pointer.x = (event.clientX / containerRef.value.offsetWidth) * 2 - 1;
+    pointer.y = -(event.clientY / containerRef.value.offsetHeight) * 2 + 1;
   }
 
   function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.aspect =
+      containerRef.value.offsetWidth / containerRef.value.offsetHeight;
     camera.updateProjectionMatrix();
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(
+      containerRef.value.offsetWidth,
+      containerRef.value.offsetHeight
+    );
   }
 
   function animate() {

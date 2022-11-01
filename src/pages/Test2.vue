@@ -1,182 +1,118 @@
 <template>
-  <div ref="scrollEl" class="scrollEl" />
-  <div ref="container" class="container" />
-  <section class="section1" />
-  <section class="section2" />
-  <section class="section3" />
-  <section class="section4" />
-  <section class="section5" />
+  <div ref="containerRef" class="container" />
 </template>
 
-<script>
+<script setup>
 import { onMounted, ref } from "vue";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-gsap.registerPlugin(ScrollTrigger);
 
-export default {
-  setup() {
-    const container = ref();
-    const scrollEl = ref();
-    const color = 0xffffff;
-    const intensity = 1;
-    const fov = 35;
-    const near = 0.9;
-    const far = 1000;
+let camera;
+const containerRef = ref();
+let intersected;
+const pointer = new THREE.Vector2();
+const scene = new THREE.Scene();
+const raycaster = new THREE.Raycaster();
+const renderer = new THREE.WebGLRenderer({
+  antialias: true,
+  alpha: true,
+});
 
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      alpha: true,
-    });
-    const scene = new THREE.Scene();
+const geometry = new THREE.BoxGeometry(15, 15, 10);
+const material = new THREE.MeshLambertMaterial({
+  color: Math.random() * 0xffffff,
+});
+const box = new THREE.Mesh(geometry, material);
+scene.add(box);
 
-    onMounted(() => {
-      let intersected;
-      const pointer = new THREE.Vector2();
+scene.background = new THREE.Color(0xf0f0f0);
 
-      const width = container.value.clientWidth;
-      const height = container.value.clientHeight;
+const light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(1, 1, 1);
+scene.add(light);
 
-      // camera
-      const camera = new THREE.PerspectiveCamera(
-        fov,
-        width / height,
-        near,
-        far
-      );
-      camera.position.set(0, 0, 2);
+onMounted(() => {
+  camera = new THREE.PerspectiveCamera(
+    35,
+    containerRef.value.offsetWidth / containerRef.value.offsetHeight,
+    1,
+    1000
+  );
+  camera.position.set(0, 0, 40);
 
-      // light
-      const light = new THREE.DirectionalLight(color, intensity);
-      const light2 = new THREE.DirectionalLight(color, intensity);
-      light2.position.set(0, -5, 2);
-      scene.add(light);
-      scene.add(light2);
+  // orbitControls
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.update();
 
-      // orbitControls
-      const controls = new OrbitControls(camera, renderer.domElement);
-      controls.update();
+  init();
+  animate();
+});
 
-      // raycaster
-      const raycaster = new THREE.Raycaster();
-      const rayOrigin = new THREE.Vector3(-3, 0, 0);
-      const rayDirection = new THREE.Vector3(10, 0, 0);
-      rayDirection.normalize();
-      raycaster.set(rayOrigin, rayDirection);
-      scene.add(
-        new THREE.ArrowHelper(
-          raycaster.ray.direction,
-          raycaster.ray.origin,
-          300,
-          0x0000ff
-        )
-      );
+// render
+function render() {
+  //   camera.lookAt(scene.position);
+  camera.updateMatrixWorld();
 
-      renderer.setSize(width, height);
-      renderer.setPixelRatio(window.devicePixelRatio);
-      container.value.appendChild(renderer.domElement);
+  // find intersections
+  raycaster.setFromCamera(pointer, camera);
+  const intersects = raycaster.intersectObjects(scene.children, false);
 
-      // render
-      renderer.render(scene, camera);
-      //   const intersects = raycaster.intersectObjects(scene.children, false);
-
-      // animation
-      const geometry = new THREE.BoxGeometry(0.4, 0.2);
-      var material = new THREE.MeshPhongMaterial();
-      var box1 = new THREE.Mesh(geometry, material);
-      var box2 = new THREE.Mesh(geometry, material);
-      material.color = new THREE.Color(0xffff00);
-      box2.position.set(0, 0, 0);
-      scene.add(box1);
-      scene.add(box2);
-      const intersects = raycaster.intersectObjects([box1, box2]);
-      gsap.to([box1.position, box2.position], {
-        y: 0.4,
-        yoyo: true,
-        repeat: -1,
-      });
-      gsap.to(light.rotation, { y: 20 });
-      if (intersects.length > 0) {
-        if (intersected != intersects[0].object) {
-          if (intersected) {
-            intersected.material.emissive.setHex(intersected.currentHex);
-          }
-          intersected = intersects[0].object;
-          intersected.currentHex = intersected.material.emissive.getHex();
-          intersected.material.emissive.setHex(0x000000);
-        }
-      } else {
-        if (intersected) {
-          console.log("dd");
-          intersected.material.emissive.setHex(intersected.currentHex);
-        }
-        intersected = null;
+  if (intersects.length > 0) {
+    if (intersected != intersects[0].object) {
+      if (intersected) {
+        intersected.material.emissive.setHex(intersected.currentHex);
       }
+      intersected = intersects[0].object;
+      intersected.currentHex = intersected.material.emissive.getHex();
+      intersected.material.emissive.setHex(0x0000ff);
+    }
+  } else {
+    if (intersected) {
+      intersected.material.emissive.setHex(intersected.currentHex);
+    }
+    intersected = null;
+  }
+  renderer.render(scene, camera);
+}
 
-      function animate() {
-        requestAnimationFrame(animate);
-        renderer.render(scene, camera);
-      }
-      animate();
+// init
+function init() {
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(
+    containerRef.value.offsetWidth,
+    containerRef.value.offsetHeight
+  );
+  containerRef.value.appendChild(renderer.domElement);
 
-      function onWindowResize() {
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
-        renderer.setSize(width, height);
-      }
+  document.addEventListener("mousemove", onPointerMove);
+  window.addEventListener("resize", onWindowResize);
+}
 
-      function onPointerMove(e) {
-        pointer.x = (e.offsetX / window.innerWidth) * 2 - 1;
-        pointer.y = -(e.offsetY / window.innerHeight) * 2 + 1;
-      }
-      document.addEventListener("mousemove", onPointerMove);
-      window.addEventListener("resize", onWindowResize);
-    });
+// animate
+function animate() {
+  requestAnimationFrame(animate);
+  render();
+}
 
-    return {
-      scrollEl,
-      container,
-    };
-  },
-};
+function onWindowResize() {
+  camera.aspect =
+    containerRef.value.offsetWidth / containerRef.value.offsetHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(
+    containerRef.value.offsetWidth,
+    containerRef.value.offsetHeight
+  );
+}
+function onPointerMove(e) {
+  pointer.x = (e.offsetX / containerRef.value.offsetWidth) * 2 - 1;
+  pointer.y = -(e.offsetY / containerRef.value.offsetHeight) * 2 + 1;
+}
 </script>
 
 <style lang="scss" scoped>
-.scrollEl {
-  position: absolute;
-  width: 0;
-  height: 500vh;
-  opacity: 0;
-}
-
 .container {
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  z-index: 9;
-}
-
-section {
   width: 100%;
   height: 100vh;
   position: relative;
 }
-
-// .section1 {
-//   background-color: tomato;
-// }
-// .section2 {
-//   background-color: steelblue;
-// }
-// .section3 {
-//   background-color: crimson;
-// }
-// .section4 {
-//   background-color: lime;
-// }
-// .section5 {
-//   background-color: grey;
-// }
 </style>

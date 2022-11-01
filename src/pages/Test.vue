@@ -1,6 +1,6 @@
 <template>
   <div>byr</div>
-  <div ref="container" class="container" />
+  <div ref="containerRef" class="container" />
   <div>hi</div>
 </template>
 
@@ -10,7 +10,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 let camera;
-const container = ref();
+const containerRef = ref();
 const intersected = ref();
 const pointer = new THREE.Vector2();
 const scene = new THREE.Scene();
@@ -22,10 +22,10 @@ const renderer = new THREE.WebGLRenderer({
 
 const geometry = new THREE.BoxGeometry(20, 20, 20);
 for (let i = 0; i < 1000; i++) {
-  const object = new THREE.Mesh(
-    geometry,
-    new THREE.MeshLambertMaterial({ color: Math.random() * 0xffffff })
-  );
+  const material = new THREE.MeshLambertMaterial({
+    color: Math.random() * 0xffffff,
+  });
+  const object = new THREE.Mesh(geometry, material);
 
   object.position.x = Math.random() * 800 - 400;
   object.position.y = Math.random() * 800 - 400;
@@ -50,7 +50,7 @@ scene.add(light);
 onMounted(() => {
   camera = new THREE.PerspectiveCamera(
     70,
-    window.innerWidth / window.innerHeight,
+    containerRef.value.offsetWidth / containerRef.value.offsetHeight,
     1,
     10000
   );
@@ -97,8 +97,11 @@ function render() {
 // init
 function init() {
   renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  container.value.appendChild(renderer.domElement);
+  renderer.setSize(
+    containerRef.value.offsetWidth,
+    containerRef.value.offsetHeight
+  );
+  containerRef.value.appendChild(renderer.domElement);
 
   document.addEventListener("mousemove", onPointerMove);
   window.addEventListener("resize", onWindowResize);
@@ -111,13 +114,17 @@ function animate() {
 }
 
 function onWindowResize() {
-  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.aspect =
+    containerRef.value.offsetWidth / containerRef.value.offsetHeight;
   camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(
+    containerRef.value.offsetWidth,
+    containerRef.value.offsetHeight
+  );
 }
 function onPointerMove(e) {
-  pointer.x = (e.offsetX / window.innerWidth) * 2 - 1;
-  pointer.y = -(e.offsetY / window.innerHeight) * 2 + 1;
+  pointer.x = (e.offsetX / containerRef.value.offsetWidth) * 2 - 1;
+  pointer.y = -(e.offsetY / containerRef.value.offsetHeight) * 2 + 1;
 }
 </script>
 
