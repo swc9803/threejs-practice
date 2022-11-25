@@ -30,6 +30,18 @@ const routes: Array<RouteRecordRaw> = [
       import(/* webpackChunkName: "test3" */ "../pages/Test3.vue"),
   },
   {
+    path: "/test4",
+    name: "test4",
+    component: () =>
+      import(/* webpackChunkName: "test4" */ "../pages/Test4.vue"),
+  },
+  {
+    path: "/test5",
+    name: "test5",
+    component: () =>
+      import(/* webpackChunkName: "test5" */ "../pages/Test5.vue"),
+  },
+  {
     path: "/paint",
     name: "paint",
     component: () =>
@@ -40,6 +52,16 @@ const routes: Array<RouteRecordRaw> = [
     name: "block",
     component: () =>
       import(/* webpackChunkName: "block" */ "../pages/Block.vue"),
+  },
+  {
+    path: "/font",
+    name: "font",
+    component: () => import(/* webpackChunkName: "font" */ "../pages/Font.vue"),
+  },
+  {
+    path: "/cat",
+    name: "cat",
+    component: () => import(/* webpackChunkName: "cat" */ "../pages/Cat.vue"),
   },
 ];
 

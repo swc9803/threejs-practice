@@ -67,10 +67,6 @@ onMounted(() => {
   controls.update();
 });
 
-function render() {
-  renderer.render(scene, camera);
-}
-
 function init() {
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(
@@ -111,7 +107,7 @@ function animate() {
       mesh.instanceColor.needsUpdate = true;
     }
   }
-  render();
+  renderer.render(scene, camera);
 }
 </script>
 

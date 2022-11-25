@@ -76,9 +76,29 @@ onMounted(() => {
   animate();
 });
 
-function render() {
+function init() {
+  loading.value = true;
+
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(
+    containerRef.value.offsetWidth,
+    containerRef.value.offsetHeight
+  );
+  containerRef.value.appendChild(renderer.domElement);
+
+  document.addEventListener("mousemove", onPointerMove);
+  window.addEventListener("resize", onWindowResize);
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  let delta = clock.getDelta();
+  if (mixer) mixer.update(delta);
+
   camera.updateMatrixWorld();
 
+  renderer.render(scene, camera);
   // find intersections
   raycaster.setFromCamera(pointer, camera);
 
@@ -108,29 +128,6 @@ function render() {
     }
     intersected = null;
   }
-  renderer.render(scene, camera);
-}
-
-function init() {
-  loading.value = true;
-
-  renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(
-    containerRef.value.offsetWidth,
-    containerRef.value.offsetHeight
-  );
-  containerRef.value.appendChild(renderer.domElement);
-
-  document.addEventListener("mousemove", onPointerMove);
-  window.addEventListener("resize", onWindowResize);
-}
-
-function animate() {
-  requestAnimationFrame(animate);
-
-  let delta = clock.getDelta();
-  if (mixer) mixer.update(delta);
-  render();
 }
 
 function onWindowResize() {

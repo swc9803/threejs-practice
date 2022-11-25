@@ -226,10 +226,7 @@ onMounted(() => {
   function animate() {
     requestAnimationFrame(animate);
 
-    render();
-  }
-
-  function render() {
+    renderer.render(scene, camera);
     camera.updateMatrixWorld();
 
     raycaster.setFromCamera(pointer, camera);

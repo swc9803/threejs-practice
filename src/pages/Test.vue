@@ -64,8 +64,23 @@ onMounted(() => {
   animate();
 });
 
-// render
-function render() {
+// init
+function init() {
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(
+    containerRef.value.offsetWidth,
+    containerRef.value.offsetHeight
+  );
+  containerRef.value.appendChild(renderer.domElement);
+
+  document.addEventListener("mousemove", onPointerMove);
+  window.addEventListener("resize", onWindowResize);
+}
+
+// animate
+function animate() {
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
   //   camera.lookAt(scene.position);
   camera.updateMatrixWorld();
 
@@ -91,26 +106,6 @@ function render() {
     }
     intersected.value = null;
   }
-  renderer.render(scene, camera);
-}
-
-// init
-function init() {
-  renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(
-    containerRef.value.offsetWidth,
-    containerRef.value.offsetHeight
-  );
-  containerRef.value.appendChild(renderer.domElement);
-
-  document.addEventListener("mousemove", onPointerMove);
-  window.addEventListener("resize", onWindowResize);
-}
-
-// animate
-function animate() {
-  requestAnimationFrame(animate);
-  render();
 }
 
 function onWindowResize() {

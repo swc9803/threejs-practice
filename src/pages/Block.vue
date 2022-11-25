@@ -22,7 +22,7 @@ onMounted(() => {
   const objects = [];
 
   init();
-  render();
+  renderer.render(scene, camera);
 
   function init() {
     camera = new THREE.PerspectiveCamera(
@@ -111,7 +111,7 @@ onMounted(() => {
       containerRef.value.offsetHeight
     );
 
-    render();
+    renderer.render(scene, camera);
   }
 
   function onPointerMove(event) {
@@ -134,7 +134,7 @@ onMounted(() => {
         .multiplyScalar(50)
         .addScalar(25);
 
-      render();
+      renderer.render(scene, camera);
     }
   }
 
@@ -174,7 +174,7 @@ onMounted(() => {
         objects.push(voxel);
       }
 
-      render();
+      renderer.render(scene, camera);
     }
   }
 
@@ -192,10 +192,6 @@ onMounted(() => {
         isShiftDown = false;
         break;
     }
-  }
-
-  function render() {
-    renderer.render(scene, camera);
   }
 });
 </script>
