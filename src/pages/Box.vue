@@ -1,5 +1,5 @@
 <template>
-  <div>byr</div>
+  <div>bye</div>
   <div ref="containerRef" class="container" />
   <div>hi</div>
 </template>

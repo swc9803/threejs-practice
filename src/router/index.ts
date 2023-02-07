@@ -13,33 +13,20 @@ const routes: Array<RouteRecordRaw> = [
       import(/* webpackChunkName: "raycaster" */ "../pages/Raycaster.vue"),
   },
   {
-    path: "/test",
-    name: "test",
-    component: () => import(/* webpackChunkName: "test" */ "../pages/Test.vue"),
+    path: "/raycaster2",
+    name: "raycaster2",
+    component: () =>
+      import(/* webpackChunkName: "raycaster2" */ "../pages/Raycaster2.vue"),
   },
   {
-    path: "/test2",
-    name: "test2",
-    component: () =>
-      import(/* webpackChunkName: "test2" */ "../pages/Test2.vue"),
+    path: "/box",
+    name: "box",
+    component: () => import(/* webpackChunkName: "box" */ "../pages/Box.vue"),
   },
   {
-    path: "/test3",
-    name: "test3",
-    component: () =>
-      import(/* webpackChunkName: "test3" */ "../pages/Test3.vue"),
-  },
-  {
-    path: "/test4",
-    name: "test4",
-    component: () =>
-      import(/* webpackChunkName: "test4" */ "../pages/Test4.vue"),
-  },
-  {
-    path: "/test5",
-    name: "test5",
-    component: () =>
-      import(/* webpackChunkName: "test5" */ "../pages/Test5.vue"),
+    path: "/gltf",
+    name: "gltf",
+    component: () => import(/* webpackChunkName: "gltf" */ "../pages/gltf.vue"),
   },
   {
     path: "/paint",
@@ -57,11 +44,6 @@ const routes: Array<RouteRecordRaw> = [
     path: "/font",
     name: "font",
     component: () => import(/* webpackChunkName: "font" */ "../pages/Font.vue"),
-  },
-  {
-    path: "/cat",
-    name: "cat",
-    component: () => import(/* webpackChunkName: "cat" */ "../pages/Cat.vue"),
   },
 ];
 
