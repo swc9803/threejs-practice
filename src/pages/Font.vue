@@ -30,7 +30,7 @@ loader.load("CHAB.json", (font) => {
     font: font,
     size: 0.2,
     height: 0.01,
-    curveSegmants: 12,
+    curveSegments: 12,
     bevelEnabled: true,
     bevelThickness: 0.03,
     bevelSize: 0.001,

@@ -11,7 +11,7 @@ const containerRef = ref();
 
 onMounted(() => {
   let renderer, scene, camera;
-  let pointclouds;
+  let pointClouds;
   let raycaster;
   let intersection = null;
   let spheresIndex = 0;
@@ -70,7 +70,7 @@ onMounted(() => {
     return geometry;
   }
 
-  function generatePointcloud(color, width, length) {
+  function generatePointCloud(color, width, length) {
     const geometry = generatePointCloudGeometry(color, width, length);
     const material = new THREE.PointsMaterial({
       size: pointSize,
@@ -80,7 +80,7 @@ onMounted(() => {
     return new THREE.Points(geometry, material);
   }
 
-  function generateIndexedPointcloud(color, width, length) {
+  function generateIndexedPointCloud(color, width, length) {
     const geometry = generatePointCloudGeometry(color, width, length);
     const numPoints = width * length;
     const indices = new Uint16Array(numPoints);
@@ -104,7 +104,7 @@ onMounted(() => {
     return new THREE.Points(geometry, material);
   }
 
-  function generateIndexedWithOffsetPointcloud(color, width, length) {
+  function generateIndexedWithOffsetPointCloud(color, width, length) {
     const geometry = generatePointCloudGeometry(color, width, length);
     const numPoints = width * length;
     const indices = new Uint16Array(numPoints);
@@ -146,7 +146,7 @@ onMounted(() => {
 
     //
 
-    const pcBuffer = generatePointcloud(
+    const pcBuffer = generatePointCloud(
       new THREE.Color(1, 0, 0),
       width,
       length
@@ -155,7 +155,7 @@ onMounted(() => {
     pcBuffer.position.set(-5, 0, 0);
     scene.add(pcBuffer);
 
-    const pcIndexed = generateIndexedPointcloud(
+    const pcIndexed = generateIndexedPointCloud(
       new THREE.Color(0, 1, 0),
       width,
       length
@@ -164,7 +164,7 @@ onMounted(() => {
     pcIndexed.position.set(0, 0, 0);
     scene.add(pcIndexed);
 
-    const pcIndexedOffset = generateIndexedWithOffsetPointcloud(
+    const pcIndexedOffset = generateIndexedWithOffsetPointCloud(
       new THREE.Color(0, 1, 1),
       width,
       length
@@ -173,7 +173,7 @@ onMounted(() => {
     pcIndexedOffset.position.set(5, 0, 0);
     scene.add(pcIndexedOffset);
 
-    pointclouds = [pcBuffer, pcIndexed, pcIndexedOffset];
+    pointClouds = [pcBuffer, pcIndexed, pcIndexedOffset];
 
     //
 
@@ -231,7 +231,7 @@ onMounted(() => {
 
     raycaster.setFromCamera(pointer, camera);
 
-    const intersections = raycaster.intersectObjects(pointclouds, false);
+    const intersections = raycaster.intersectObjects(pointClouds, false);
     intersection = intersections.length > 0 ? intersections[0] : null;
 
     if (toggle > 0.02 && intersection !== null) {
